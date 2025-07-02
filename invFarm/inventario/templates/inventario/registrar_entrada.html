@@ -1,0 +1,8 @@
+<h2>Registrar Entrada para {{ producto.nombre }}</h2>
+<form method="post">
+    {% csrf_token %}
+    <label>Cantidad a ingresar:</label>
+    <input type="number" name="cantidad" min="1" required>
+    <button type="submit">Registrar Entrada</button>
+</form>
+<a href="{% url 'panel_gestion_inventario' %}">Volver al Panel de Gestión</a>

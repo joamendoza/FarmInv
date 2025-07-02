@@ -1,0 +1,8 @@
+<h2>Órdenes de Compra</h2>
+<a href="{% url 'crear_orden_compra' %}">Nueva Orden de Compra</a>
+<ul>
+    {% for orden in ordenes %}
+        <li>Proveedor: {{ orden.proveedor.nombre }} | Fecha: {{ orden.fecha }} | Estado: {{ orden.estado }}</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'panel_gestion_inventario' %}">Volver al Panel de Gestión</a>

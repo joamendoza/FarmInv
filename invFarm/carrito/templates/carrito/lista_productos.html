@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Productos</title>
+</head>
+<body>
+    <h1>Productos Disponibles</h1>
+    <ul>
+        {% for producto in productos %}
+            <li>
+                {{ producto.nombre }} - ${{ producto.precio }} - Stock: {{ producto.stock }}
+                {% if producto.stock > 0 %}
+                    <a href="{% url 'agregar_al_carrito' producto.id %}">Añadir al Carrito</a>
+                {% else %}
+                    <span style="color:gray;">Sin stock</span>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'ver_carrito' %}">Ver Carrito</a>
+    <pre>
+        ⊹⠀ ⠀  ⣀⣤⣤⣤⡀⣀⣤⣤⣤⣀ ⠀⠀⠀⠀⠀ ₊
+        ⠀⠀   ⣼⠋ ⠀⠀ ⠹⠋ ⠀⠀⠀⠙⣧
+        ⠀⠀   ⣿ ⠀⠀⠀⠀⠀⠀⠀⠀⠀  ⣿
+        ⣠⠶⠛⠻⣷⠞⠛⢶⡄ ⠀⠀⠀⠀⣼⠃
+        ⣿ ⠀⠀⠀⠀⠀ ⠀⣿ ⠀⠀ ⣠⠞⠁
+        ⠘⣧ ⠀⠀⠀⠀⠀⡼⣧⣴⠞
+        ⠀⠈⠻⣦⣀⡴⠟⠁ ⠀⠀⠀⠀⠀⊹
+        ₊⠀⠀⠀ ⠉
+    </pre>
+    {% if messages %}
+        <ul id="messages">
+            {% for message in messages %}
+                <li style="color:green;">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        <script>
+            setTimeout(function() {
+                var msg = document.getElementById('messages');
+                if (msg) {
+                    msg.style.transition = "opacity 1s";
+                    msg.style.opacity = 0;
+                    setTimeout(function(){ msg.remove(); }, 1000);
+                }
+            }, 2000); // 3 segundos
+        </script>
+    {% endif %}
+    {% if user.is_authenticated %}
+        {% if user.is_staff or user.groups.all|length > 0 %}
+            <a href="{% url 'panel_gestion_inventario' %}">Ir al Panel de Gestión de Inventario</a>
+        {% endif %}
+        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit">Cerrar sesión</button>
+        </form>
+    {% else %}
+        <a href="{% url 'login_usuario' %}">Iniciar sesión</a> /
+        <a href="{% url 'registro_usuario' %}">Registrarse</a>
+    {% endif %}
+</body>
+</html>

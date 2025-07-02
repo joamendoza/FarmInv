@@ -1,0 +1,31 @@
+<h2>Reporte de Inventario</h2>
+
+<h3>Productos Activos en Stock</h3>
+<ul>
+    {% for producto in productos %}
+        {% if producto.activo %}
+            <li>{{ producto.nombre }}: {{ producto.stock }} unidades</li>
+        {% endif %}
+    {% empty %}
+        <li>No hay productos activos.</li>
+    {% endfor %}
+</ul>
+
+<h3>Productos Inactivos en Stock</h3>
+<ul>
+    {% for producto in productos %}
+        {% if not producto.activo %}
+            <li>{{ producto.nombre }}: {{ producto.stock }} unidades</li>
+        {% endif %}
+    {% empty %}
+        <li>No hay productos inactivos.</li>
+    {% endfor %}
+</ul>
+
+<h3>Movimientos Recientes</h3>
+<ul>
+    {% for mov in movimientos %}
+        <li>{{ mov.fecha }} - {{ mov.get_tipo_display }} - {{ mov.producto.nombre }} - Cantidad: {{ mov.cantidad }} - Usuario: {{ mov.usuario }}</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'panel_gestion_inventario' %}">Volver al Panel de Gestión</a>

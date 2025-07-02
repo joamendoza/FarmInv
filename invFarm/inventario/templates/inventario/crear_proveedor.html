@@ -1,0 +1,10 @@
+<h2>Nuevo Proveedor</h2>
+<form method="post">
+    {% csrf_token %}
+    <label>Nombre:</label><input type="text" name="nombre" required><br>
+    <label>Contacto:</label><input type="text" name="contacto"><br>
+    <label>Teléfono:</label><input type="text" name="telefono"><br>
+    <label>Email:</label><input type="email" name="email"><br>
+    <button type="submit">Guardar</button>
+</form>
+<a href="{% url 'panel_gestion_inventario' %}">Volver al Panel de Gestión</a>

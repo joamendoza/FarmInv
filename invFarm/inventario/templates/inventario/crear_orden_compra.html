@@ -1,0 +1,12 @@
+<h2>Nueva Orden de Compra</h2>
+<form method="post">
+    {% csrf_token %}
+    <label>Proveedor:</label>
+    <select name="proveedor">
+        {% for proveedor in proveedores %}
+            <option value="{{ proveedor.id }}">{{ proveedor.nombre }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Crear Orden</button>
+</form>
+<a href="{% url 'panel_gestion_inventario' %}">Volver al Panel de Gestión</a>

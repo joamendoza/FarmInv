@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Panel de Gestión de Inventario</title>
+    <style>
+        .grupo-usuario {
+            float: right;
+            color: #888;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>
+        Panel de Gestión de Inventario
+        <span class="grupo-usuario">
+            (
+            {% for group in user.groups.all %}
+                {{ group.name }}{% if not forloop.last %}, {% endif %}
+            {% empty %}
+                Sin grupo
+            {% endfor %}
+            )
+        </span>
+    </h1>
+    <ul>
+        {% if user.is_superuser %}
+            <li><a href="{% url 'producto_list' %}">Lista de Productos</a></li>
+            <li><a href="{% url 'producto_create' %}">Agregar Producto</a></li>
+            <li><a href="{% url 'lista_proveedores' %}">Proveedores</a></li>
+            <li><a href="{% url 'crear_proveedor' %}">Agregar Proveedor</a></li>
+            <li><a href="{% url 'lista_ordenes_compra' %}">Órdenes de Compra</a></li>
+            <li><a href="{% url 'crear_orden_compra' %}">Nueva Orden de Compra</a></li>
+            <li><a href="{% url 'lista_proyectos' %}">Proyectos</a></li>
+            <li><a href="{% url 'crear_proyecto' %}">Nuevo Proyecto</a></li>
+            <li><a href="{% url 'reporte_inventario' %}">Reporte de Inventario y Movimientos</a></li>
+        {% else %}
+            {% for group in user.groups.all %}
+                {% if group.name == "Usuario Final o Trabajador de Planta" %}
+                    <li><a href="{% url 'producto_list' %}">Solicitar/Registrar Salida de Materiales</a></li>
+                {% endif %}
+                {% if group.name == "Gestor de Inventario" %}
+                    <li><a href="{% url 'producto_list' %}">Lista de Productos</a></li>
+                    <li><a href="{% url 'producto_create' %}">Agregar Producto</a></li>
+                    <li><a href="{% url 'lista_proveedores' %}">Proveedores</a></li>
+                    <li><a href="{% url 'crear_proveedor' %}">Agregar Proveedor</a></li>
+                    <li><a href="{% url 'lista_ordenes_compra' %}">Órdenes de Compra</a></li>
+                    <li><a href="{% url 'crear_orden_compra' %}">Nueva Orden de Compra</a></li>
+                    <li><a href="{% url 'lista_proyectos' %}">Proyectos</a></li>
+                    <li><a href="{% url 'crear_proyecto' %}">Nuevo Proyecto</a></li>
+                    <li><a href="{% url 'reporte_inventario' %}">Reporte de Inventario y Movimientos</a></li>
+                {% endif %}
+                {% if group.name == "Comprador" %}
+                    <li><a href="{% url 'lista_proveedores' %}">Proveedores</a></li>
+                    <li><a href="{% url 'crear_proveedor' %}">Agregar Proveedor</a></li>
+                    <li><a href="{% url 'lista_ordenes_compra' %}">Órdenes de Compra</a></li>
+                    <li><a href="{% url 'crear_orden_compra' %}">Nueva Orden de Compra</a></li>
+                    <li><a href="{% url 'reporte_inventario' %}">Reporte de Inventario y Movimientos</a></li>
+                {% endif %}
+                {% if group.name == "Jefe de Producción o Manufactura" or group.name == "Gerente de Proyectos" %}
+                    <li><a href="{% url 'lista_proyectos' %}">Proyectos</a></li>
+                    <li><a href="{% url 'crear_proyecto' %}">Nuevo Proyecto</a></li>
+                    <li><a href="{% url 'reporte_inventario' %}">Reporte de Inventario y Movimientos</a></li>
+                {% endif %}
+                {% if group.name == "Encargado de Logística" or group.name == "Auditor de Inventario" %}
+                    <li><a href="{% url 'reporte_inventario' %}">Reporte de Inventario y Movimientos</a></li>
+                {% endif %}
+            {% empty %}
+                <li>Sin grupo</li>
+            {% endfor %}
+        {% endif %}
+    </ul>
+    <h2>Movimientos de Inventario</h2>
+    <p>Para registrar una <strong>entrada</strong> o <strong>salida</strong> de stock, primero selecciona un producto en la <a href="{% url 'producto_list' %}">Lista de Productos</a> y usa los enlaces "Registrar Entrada" o "Registrar Salida" que aparecen junto a cada producto.</p>
+    <a href="{% url 'lista_productos' %}">Ir a la tienda</a>
+    <form action="{% url 'logout' %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit">Cerrar sesión</button>
+    </form>
+</body>
+</html>

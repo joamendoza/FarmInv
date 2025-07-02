@@ -1,0 +1,8 @@
+<h2>Proyectos</h2>
+<a href="{% url 'crear_proyecto' %}">Nuevo Proyecto</a>
+<ul>
+    {% for proyecto in proyectos %}
+        <li>{{ proyecto.nombre }} | Responsable: {{ proyecto.responsable }} | Inicio: {{ proyecto.fecha_inicio }} | Fin: {{ proyecto.fecha_fin }}</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'panel_gestion_inventario' %}">Volver al Panel de Gestión</a>
