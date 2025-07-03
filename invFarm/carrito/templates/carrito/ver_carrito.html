@@ -1,51 +1,419 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Carrito de Compras</title>
+    <title>Carrito de Compras - Farmacia Online</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .cart-content {
+            padding: 30px;
+        }
+        
+        .cart-items {
+            margin-bottom: 30px;
+        }
+        
+        .cart-item {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .cart-item:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .item-info {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .item-name {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .item-details {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        
+        .item-price {
+            font-size: 1.1em;
+            color: #27ae60;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        
+        .item-quantity {
+            background: #3498db;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+        
+        .item-subtotal {
+            font-size: 1.3em;
+            color: #e74c3c;
+            font-weight: bold;
+            min-width: 80px;
+            text-align: right;
+        }
+        
+        .item-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .quantity-form {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .quantity-input {
+            width: 60px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .remove-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+        
+        .remove-btn:hover {
+            background: #c0392b;
+            transform: translateY(-1px);
+        }
+        
+        .cart-summary {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .total-amount {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .currency-converter {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .currency-converter h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .currency-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
+        .currency-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .currency-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .currency-result {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #27ae60;
+            margin-top: 15px;
+        }
+        
+        .currency-error {
+            background: #fff5f5;
+            color: #e74c3c;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #e74c3c;
+            margin-top: 15px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-continue {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-continue:hover {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+        }
+        
+        .btn-pay {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-pay:hover {
+            background: #219a52;
+            transform: translateY(-2px);
+        }
+        
+        .empty-cart {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+        }
+        
+        .empty-cart h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+        
+        .empty-cart p {
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+        
+        .empty-cart .action-btn {
+            background: #3498db;
+            color: white;
+        }
+        
+        .empty-cart .action-btn:hover {
+            background: #2980b9;
+        }
+        
+        @media (max-width: 768px) {
+            .cart-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .item-info {
+                min-width: 100%;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .currency-buttons {
+                flex-direction: column;
+            }
+            
+            .currency-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Carrito de Compras</h1>
-    <ul>
-        {% for item in carrito %}
-            <li>
-                {{ item.producto.nombre }} - ${{ item.producto.precio }} x {{ item.cantidad }} = ${{ item.subtotal }}
-                {% if item.cantidad > 1 %}
-                    <form action="{% url 'eliminar_del_carrito' item.id %}" method="post" style="display:inline;">
-                        {% csrf_token %}
-                        <input type="number" name="cantidad" min="1" max="{{ item.cantidad }}" value="1" style="width:50px;">
-                        <button type="submit" style="color:red;">Eliminar cantidad</button>
+    <div class="container">
+        <div class="header">
+            <h1>🛒 Carrito de Compras</h1>
+            <p>Revisa tus productos antes de proceder al pago</p>
+        </div>
+        
+        <div class="cart-content">
+            {% if carrito %}
+                <div class="cart-items">
+                    {% for item in carrito %}
+                        <div class="cart-item">
+                            <div class="item-info">
+                                <div class="item-name">{{ item.producto.nombre }}</div>
+                                <div class="item-details">Precio unitario: ${{ item.producto.precio }}</div>
+                                <div class="item-price">Precio unitario: ${{ item.producto.precio }}</div>
+                                <div class="item-quantity">Cantidad: {{ item.cantidad }}</div>
+                            </div>
+                            <div class="item-subtotal">
+                                ${{ item.subtotal }}
+                            </div>
+                            <div class="item-actions">
+                                {% if item.cantidad > 1 %}
+                                    <form action="{% url 'eliminar_del_carrito' item.id %}" method="post" class="quantity-form">
+                                        {% csrf_token %}
+                                        <input type="number" name="cantidad" min="1" max="{{ item.cantidad }}" value="1" class="quantity-input">
+                                        <button type="submit" class="remove-btn">🗑️ Eliminar</button>
+                                    </form>
+                                {% else %}
+                                    <form action="{% url 'eliminar_del_carrito' item.id %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="remove-btn">🗑️ Eliminar</button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="cart-summary">
+                    <div class="total-amount">
+                        Total: ${{ total }}
+                    </div>
+                </div>
+                
+                <div class="currency-converter">
+                    <h3>💱 Convertir Moneda</h3>
+                    <form method="get">
+                        <div class="currency-buttons">
+                            <button type="submit" name="convertir" value="dolar" class="currency-btn">
+                                💵 Convertir a Dólar
+                            </button>
+                            <button type="submit" name="convertir" value="euro" class="currency-btn">
+                                💶 Convertir a Euro
+                            </button>
+                        </div>
                     </form>
-                {% else %}
-                    <form action="{% url 'eliminar_del_carrito' item.id %}" method="post" style="display:inline;">
-                        {% csrf_token %}
-                        <button type="submit" style="color:red;">Eliminar</button>
-                    </form>
-                {% endif %}
-            </li>
-        {% endfor %}
-    </ul>
-    <p>Total: ${{ total }}</p>
-
-    <form method="get" style="margin-bottom: 10px;">
-        <button type="submit" name="convertir" value="dolar">Convertir a Dólar</button>
-        <button type="submit" name="convertir" value="euro">Convertir a Euro</button>
-    </form>
-
-    {% if error_dolar %}
-        <p style="color:red;">{{ error_dolar }}</p>
-    {% elif valor_dolar and total_usd %}
-        <p>Valor dólar hoy: ${{ valor_dolar|floatformat:2 }}</p>
-        <p>Total en dólares: ${{ total_usd|floatformat:2 }}</p>
-    {% endif %}
-
-    {% if error_euro %}
-        <p style="color:red;">{{ error_euro }}</p>
-    {% elif valor_euro and total_eur %}
-        <p>Valor euro hoy: ${{ valor_euro|floatformat:2 }}</p>
-        <p>Total en euros: €{{ total_eur|floatformat:2 }}</p>
-    {% endif %}
-
-    <a href="{% url 'lista_productos' %}">Volver al listado de productos</a>
-    <a href="{% url 'pagar_webpay' %}">Pagar con Webpay</a>
+                    
+                    {% if error_dolar %}
+                        <div class="currency-error">
+                            ❌ {{ error_dolar }}
+                        </div>
+                    {% elif valor_dolar and total_usd %}
+                        <div class="currency-result">
+                            <strong>💵 Conversión a Dólar:</strong><br>
+                            Valor dólar hoy: ${{ valor_dolar|floatformat:2 }} CLP<br>
+                            <strong>Total en dólares: ${{ total_usd|floatformat:2 }} USD</strong>
+                        </div>
+                    {% endif %}
+                    
+                    {% if error_euro %}
+                        <div class="currency-error">
+                            ❌ {{ error_euro }}
+                        </div>
+                    {% elif valor_euro and total_eur %}
+                        <div class="currency-result">
+                            <strong>💶 Conversión a Euro:</strong><br>
+                            Valor euro hoy: ${{ valor_euro|floatformat:2 }} CLP<br>
+                            <strong>Total en euros: €{{ total_eur|floatformat:2 }} EUR</strong>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="action-buttons">
+                    <a href="{% url 'lista_productos' %}" class="action-btn btn-continue">
+                        🏪 Seguir Comprando
+                    </a>
+                    <a href="{% url 'pagar_webpay' %}" class="action-btn btn-pay">
+                        💳 Pagar con Webpay
+                    </a>
+                </div>
+            {% else %}
+                <div class="empty-cart">
+                    <h3>🛒 Tu carrito está vacío</h3>
+                    <p>¡Agrega algunos productos para empezar tu compra!</p>
+                    <a href="{% url 'lista_productos' %}" class="action-btn">
+                        🏪 Ver Productos
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
 </body>
 </html>

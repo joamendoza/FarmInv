@@ -12,8 +12,8 @@ Guía de instalación, configuración y uso
 2) Instalación:
 
     a) Clona el repositorio o descarga el código fuente y navega a la carpeta "proyectapis":
-        git clone https://github.com/joamendoza/ProyectoAPIS.git
-        cd ProyectoAPIS/proyectapis
+        git clone https://github.com/joamendoza/FarmInv.git
+        cd FARMINV/infFarm
 
     b) Crea y activa un entorno virtual:
         python -m venv venv
@@ -74,9 +74,9 @@ Guía de instalación, configuración y uso
 
             {
                 "id": 1,
-                "nombre": "Martillo",
-                "categoria": "herramientas",
-                "descripcion": "Martillo de acero",
+                "nombre": "pastilla",
+                "categoria": "medicamenteos",
+                "descripcion": "Pastilla para el dolor de cabeza",
                 "precio": 5000,
                 "stock": 10
             }

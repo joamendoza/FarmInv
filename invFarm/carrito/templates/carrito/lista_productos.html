@@ -1,24 +1,452 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Lista de Productos</title>
+    <title>Lista de Productos - Farmacia Online</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .search-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .search-container {
+            display: flex;
+            gap: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            font-size: 18px;
+        }
+        
+        .search-btn, .clear-btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .search-btn {
+            background: #3498db;
+            color: white;
+        }
+        
+        .search-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .clear-btn {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .clear-btn:hover {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+        }
+        
+        .search-results {
+            background: #e8f5e8;
+            padding: 15px 30px;
+            border-bottom: 1px solid #c8e6c9;
+            color: #2e7d32;
+            font-weight: 500;
+        }
+        
+        .actions-bar {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .cart-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .cart-btn {
+            background: #e74c3c;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .cart-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            padding: 30px;
+        }
+        
+        .product-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        
+        .product-header {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .product-name {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .product-category {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            display: inline-block;
+        }
+        
+        .product-body {
+            padding: 20px;
+        }
+        
+        .product-price {
+            font-size: 1.4em;
+            color: #27ae60;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .product-stock {
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+        
+        .product-description {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+        
+        .product-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .add-to-cart {
+            flex: 1;
+            background: #27ae60;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            text-align: center;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .add-to-cart:hover {
+            background: #219a52;
+            transform: translateY(-2px);
+        }
+        
+        .out-of-stock {
+            background: #95a5a6;
+            cursor: not-allowed;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .no-products {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+        }
+        
+        .no-products h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+        
+        .no-products p {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+        
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .messages {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 400px;
+        }
+        
+        .message {
+            background: #27ae60;
+            color: white;
+            padding: 15px 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            animation: slideIn 0.3s ease;
+        }
+        
+        .message.error {
+            background: #e74c3c;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .cat-art {
+            margin: 20px 0;
+            opacity: 0.7;
+            font-size: 0.8em;
+        }
+        
+        @media (max-width: 768px) {
+            .search-container {
+                flex-direction: column;
+            }
+            
+            .search-box {
+                min-width: 100%;
+            }
+            
+            .actions-bar {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Productos Disponibles</h1>
-    <ul>
-        {% for producto in productos %}
-            <li>
-                {{ producto.nombre }} - ${{ producto.precio }} - Stock: {{ producto.stock }}
-                {% if producto.stock > 0 %}
-                    <a href="{% url 'agregar_al_carrito' producto.id %}">Añadir al Carrito</a>
-                {% else %}
-                    <span style="color:gray;">Sin stock</span>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 Farmacia Online</h1>
+            <p>Encuentra los mejores medicamentos y productos farmacéuticos</p>
+        </div>
+        
+        <div class="search-section">
+            <form method="get" class="search-container">
+                <div class="search-box">
+                    <input type="text" name="search" placeholder="Buscar medicamentos por nombre, categoría o descripción..." value="{{ search_query }}">
+                    <span class="search-icon">🔍</span>
+                </div>
+                <button type="submit" class="search-btn">Buscar</button>
+                {% if search_query %}
+                    <a href="{% url 'lista_productos' %}" class="clear-btn">Limpiar</a>
                 {% endif %}
-            </li>
-        {% endfor %}
-    </ul>
-    <a href="{% url 'ver_carrito' %}">Ver Carrito</a>
-    <pre>
+            </form>
+        </div>
+        
+        {% if search_query %}
+        <div class="search-results">
+            📋 Resultados para: "<strong>{{ search_query }}</strong>" ({{ productos|length }} producto{{ productos|length|pluralize }})
+        </div>
+        {% endif %}
+        
+        <div class="actions-bar">
+            <div class="cart-info">
+                <a href="{% url 'ver_carrito' %}" class="cart-btn">🛒 Ver Carrito</a>
+            </div>
+        </div>
+        
+        <div class="products-grid">
+            {% for producto in productos %}
+                <div class="product-card">
+                    <div class="product-header">
+                        <div class="product-name">{{ producto.nombre }}</div>
+                        <div class="product-category">{{ producto.categoria }}</div>
+                    </div>
+                    <div class="product-body">
+                        <div class="product-price">${{ producto.precio }}</div>
+                        <div class="product-stock">
+                            {% if producto.stock > 0 %}
+                                ✅ Stock disponible: {{ producto.stock }} unidades
+                            {% else %}
+                                ❌ Sin stock disponible
+                            {% endif %}
+                        </div>
+                        {% if producto.descripcion %}
+                            <div class="product-description">
+                                {{ producto.descripcion|truncatewords:20 }}
+                            </div>
+                        {% endif %}
+                        <div class="product-actions">
+                            {% if producto.stock > 0 %}
+                                <a href="{% url 'agregar_al_carrito' producto.id %}" class="add-to-cart">🛒 Añadir al Carrito</a>
+                            {% else %}
+                                <span class="out-of-stock">Sin stock</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="no-products">
+                    {% if search_query %}
+                        <h3>🔍 No se encontraron resultados</h3>
+                        <p>No se encontraron productos que coincidan con "{{ search_query }}"</p>
+                        <a href="{% url 'lista_productos' %}" class="search-btn">Ver todos los productos</a>
+                    {% else %}
+                        <h3>📦 No hay productos disponibles</h3>
+                        <p>Actualmente no hay productos en stock</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+        
+        <div class="footer">
+            <div class="cat-art">
+                <pre>
         ⊹⠀ ⠀  ⣀⣤⣤⣤⡀⣀⣤⣤⣤⣀ ⠀⠀⠀⠀⠀ ₊
         ⠀⠀   ⣼⠋ ⠀⠀ ⠹⠋ ⠀⠀⠀⠙⣧
         ⠀⠀   ⣿ ⠀⠀⠀⠀⠀⠀⠀⠀⠀  ⣿
@@ -27,35 +455,45 @@
         ⠘⣧ ⠀⠀⠀⠀⠀⡼⣧⣴⠞
         ⠀⠈⠻⣦⣀⡴⠟⠁ ⠀⠀⠀⠀⠀⊹
         ₊⠀⠀⠀ ⠉
-    </pre>
+                </pre>
+            </div>
+            
+            <div class="footer-links">
+                {% if user.is_authenticated %}
+                    {% if user.is_staff or user.groups.all|length > 0 %}
+                        <a href="{% url 'panel_gestion_inventario' %}">🏠 Panel de Gestión</a>
+                    {% endif %}
+                    <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" style="background: none; border: none; color: white; cursor: pointer; padding: 10px 20px; border-radius: 5px; transition: all 0.3s ease;">🚪 Cerrar sesión</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login_usuario' %}">🔐 Iniciar sesión</a>
+                    <a href="{% url 'registro_usuario' %}">📝 Registrarse</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
     {% if messages %}
-        <ul id="messages">
+        <div class="messages">
             {% for message in messages %}
-                <li style="color:green;">{{ message }}</li>
+                <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                    {{ message }}
+                </div>
             {% endfor %}
-        </ul>
+        </div>
         <script>
             setTimeout(function() {
-                var msg = document.getElementById('messages');
-                if (msg) {
-                    msg.style.transition = "opacity 1s";
-                    msg.style.opacity = 0;
-                    setTimeout(function(){ msg.remove(); }, 1000);
-                }
-            }, 2000); // 3 segundos
+                const messages = document.querySelectorAll('.message');
+                messages.forEach(msg => {
+                    msg.style.transition = "opacity 0.5s, transform 0.5s";
+                    msg.style.opacity = "0";
+                    msg.style.transform = "translateX(100%)";
+                    setTimeout(() => msg.remove(), 500);
+                });
+            }, 3000);
         </script>
-    {% endif %}
-    {% if user.is_authenticated %}
-        {% if user.is_staff or user.groups.all|length > 0 %}
-            <a href="{% url 'panel_gestion_inventario' %}">Ir al Panel de Gestión de Inventario</a>
-        {% endif %}
-        <form action="{% url 'logout' %}" method="post" style="display:inline;">
-            {% csrf_token %}
-            <button type="submit">Cerrar sesión</button>
-        </form>
-    {% else %}
-        <a href="{% url 'login_usuario' %}">Iniciar sesión</a> /
-        <a href="{% url 'registro_usuario' %}">Registrarse</a>
     {% endif %}
 </body>
 </html>

@@ -8,7 +8,8 @@ from .views import (
     lista_proyectos, crear_proyecto,
     reporte_inventario, panel_gestion_inventario,
     ProductoListAPIView, ProductoDetailAPIView,
-    registro_usuario, login_usuario, usuario_con_grupo_required
+    registro_usuario, login_usuario, usuario_con_grupo_required,
+    recuperar_password
 )
 
 urlpatterns = [
@@ -45,4 +46,5 @@ urlpatterns = [
     # Autenticación (sin restricción)
     path('registro/', registro_usuario, name='registro_usuario'),
     path('login/', login_usuario, name='login_usuario'),
+    path('recuperar-password/', recuperar_password, name='recuperar_password'),
 ]

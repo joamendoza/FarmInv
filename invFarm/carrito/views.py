@@ -5,6 +5,7 @@ import json
 import os
 from datetime import datetime
 from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import Q
 from inventario.models import Producto
 from .models import Carrito, Boleta, DetalleBoleta
 from django.urls import reverse
@@ -56,7 +57,20 @@ def obtener_moneda(series_code):
 
 def lista_productos(request):
     productos = Producto.objects.filter(activo=True)
-    return render(request, 'carrito/lista_productos.html', {'productos': productos})
+    search_query = request.GET.get('search', '')
+    
+    if search_query:
+        productos = productos.filter(
+            Q(nombre__icontains=search_query) |
+            Q(categoria__nombre__icontains=search_query) |
+            Q(descripcion__icontains=search_query)
+        )
+    
+    context = {
+        'productos': productos,
+        'search_query': search_query
+    }
+    return render(request, 'carrito/lista_productos.html', context)
 
 def agregar_al_carrito(request, producto_id):
     producto = get_object_or_404(Producto, id=producto_id)

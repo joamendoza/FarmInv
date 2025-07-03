@@ -226,7 +226,39 @@ def login_usuario(request):
         form = AuthenticationForm()
     return render(request, 'inventario/login.html', {'form': form})
 
-from django.contrib.auth.decorators import user_passes_test
+# Importaciones adicionales para recuperación de contraseña
+from django.contrib.auth.models import User
+from django.contrib import messages
+
+def recuperar_password(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+        
+        if new_password != confirm_password:
+            messages.error(request, 'Las contraseñas no coinciden.')
+            return render(request, 'inventario/recuperar_password.html')
+        
+        if len(new_password) < 8:
+            messages.error(request, 'La contraseña debe tener al menos 8 caracteres.')
+            return render(request, 'inventario/recuperar_password.html')
+        
+        try:
+            # Buscar usuario por nombre de usuario
+            user = User.objects.get(username=username)
+            
+            # Cambiar la contraseña
+            user.set_password(new_password)
+            user.save()
+            
+            messages.success(request, 'Tu contraseña ha sido cambiada exitosamente.')
+            return redirect('login_usuario')
+            
+        except User.DoesNotExist:
+            messages.error(request, 'No se encontró un usuario con ese nombre de usuario.')
+    
+    return render(request, 'inventario/recuperar_password.html')
 
 def usuario_con_grupo_required(view_func):
     return user_passes_test(lambda u: u.is_authenticated and u.groups.exists())(view_func)
