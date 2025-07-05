@@ -1,12 +1,240 @@
-<h2>Nueva Orden de Compra</h2>
-<form method="post">
-    {% csrf_token %}
-    <label>Proveedor:</label>
-    <select name="proveedor">
-        {% for proveedor in proveedores %}
-            <option value="{{ proveedor.id }}">{{ proveedor.nombre }}</option>
-        {% endfor %}
-    </select>
-    <button type="submit">Crear Orden</button>
-</form>
-<a href="{% url 'panel_gestion_inventario' %}">Volver al Panel de Gestión</a>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📋 Nueva Orden de Compra - FarmInv</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+            font-size: 14px;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-group select:focus {
+            border-color: #667eea;
+            outline: none;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .btn {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-back {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-back:hover {
+            background: #138496;
+            transform: translateY(-2px);
+        }
+
+        .required {
+            color: #dc3545;
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .info-box p {
+            margin: 0;
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .no-providers {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            color: #856404;
+            text-align: center;
+        }
+
+        .no-providers a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .no-providers a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+            
+            .form-container {
+                padding: 25px;
+            }
+            
+            .btn-container {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-plus"></i> Nueva Orden de Compra</h1>
+            <p class="subtitle">Crea una nueva orden de compra para el inventario</p>
+        </div>
+        
+        <div class="form-container">
+            <div class="info-box">
+                <p><i class="fas fa-info-circle"></i> Selecciona un proveedor para crear una nueva orden de compra.</p>
+            </div>
+            
+            {% if proveedores %}
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label for="proveedor">
+                            <i class="fas fa-truck"></i> Proveedor <span class="required">*</span>
+                        </label>
+                        <select name="proveedor" id="proveedor" required>
+                            <option value="">Selecciona un proveedor</option>
+                            {% for proveedor in proveedores %}
+                                <option value="{{ proveedor.id }}">{{ proveedor.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="btn-container">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Crear Orden
+                        </button>
+                        <a href="{% url 'panel_gestion_inventario' %}" class="btn btn-back">
+                            <i class="fas fa-arrow-left"></i> Volver al Panel
+                        </a>
+                    </div>
+                </form>
+            {% else %}
+                <div class="no-providers">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p><strong>No hay proveedores registrados</strong></p>
+                    <p>Debes registrar al menos un proveedor antes de crear una orden de compra.</p>
+                    <br>
+                    <a href="{% url 'crear_proveedor' %}">
+                        <i class="fas fa-plus"></i> Crear Proveedor
+                    </a>
+                </div>
+                
+                <div class="btn-container">
+                    <a href="{% url 'panel_gestion_inventario' %}" class="btn btn-back">
+                        <i class="fas fa-arrow-left"></i> Volver al Panel
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

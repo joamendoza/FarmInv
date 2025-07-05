@@ -84,3 +84,6 @@ Guía de instalación, configuración y uso
 7) Panel de Administración:
 
     - Accede a http://127.0.0.1:8000/admin/ con tu superusuario para gestionar productos, boletas, etc.
+
+# Crear 20 productos de ejemplo (cantidad por defecto)
+python manage.py crear_productos_ejemplo

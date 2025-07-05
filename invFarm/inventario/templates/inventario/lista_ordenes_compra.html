@@ -1,8 +1,304 @@
-<h2>Órdenes de Compra</h2>
-<a href="{% url 'crear_orden_compra' %}">Nueva Orden de Compra</a>
-<ul>
-    {% for orden in ordenes %}
-        <li>Proveedor: {{ orden.proveedor.nombre }} | Fecha: {{ orden.fecha }} | Estado: {{ orden.estado }}</li>
-    {% endfor %}
-</ul>
-<a href="{% url 'panel_gestion_inventario' %}">Volver al Panel de Gestión</a>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Órdenes de Compra - Farmacia</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .actions-bar {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #219a52;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+        }
+        
+        .orders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            padding: 30px;
+        }
+        
+        .order-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .order-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #e67e22, #d35400);
+        }
+        
+        .order-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        
+        .order-icon {
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .order-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .order-number {
+            font-size: 1.1em;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+        
+        .provider-name {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .order-info {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        
+        .info-icon {
+            width: 20px;
+            text-align: center;
+            color: #e67e22;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #2c3e50;
+            min-width: 70px;
+        }
+        
+        .info-text {
+            color: #7f8c8d;
+            flex: 1;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-pendiente {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-procesando {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .status-completado {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-cancelado {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .no-orders {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+        }
+        
+        .no-orders h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+        
+        .no-orders p {
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .orders-grid {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+            
+            .actions-bar {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛒 Órdenes de Compra</h1>
+            <p>Gestiona y supervisa las órdenes de compra</p>
+        </div>
+        
+        <div class="actions-bar">
+            <a href="{% url 'crear_orden_compra' %}" class="btn btn-primary">➕ Nueva Orden de Compra</a>
+            <a href="{% url 'panel_gestion_inventario' %}" class="btn btn-secondary">🏠 Volver al Panel</a>
+        </div>
+        
+        <div class="content">
+            {% if ordenes %}
+                <div class="orders-grid">
+                    {% for orden in ordenes %}
+                        <div class="order-card">
+                            <div class="order-icon">📋</div>
+                            <div class="order-header">
+                                <div class="order-number">Orden #{{ orden.id }}</div>
+                                <div class="provider-name">{{ orden.proveedor.nombre }}</div>
+                            </div>
+                            <div class="order-info">
+                                <div class="info-item">
+                                    <div class="info-icon">📅</div>
+                                    <div class="info-label">Fecha:</div>
+                                    <div class="info-text">{{ orden.fecha|date:"d/m/Y H:i" }}</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-icon">📊</div>
+                                    <div class="info-label">Estado:</div>
+                                    <div class="info-text">
+                                        <span class="status-badge status-{{ orden.estado }}">
+                                            {{ orden.estado|capfirst }}
+                                        </span>
+                                    </div>
+                                </div>
+                                {% if orden.usuario %}
+                                    <div class="info-item">
+                                        <div class="info-icon">👤</div>
+                                        <div class="info-label">Usuario:</div>
+                                        <div class="info-text">{{ orden.usuario.username }}</div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-orders">
+                    <h3>📋 No hay órdenes de compra</h3>
+                    <p>Comienza creando tu primera orden de compra</p>
+                    <a href="{% url 'crear_orden_compra' %}" class="btn btn-primary">➕ Crear Orden</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

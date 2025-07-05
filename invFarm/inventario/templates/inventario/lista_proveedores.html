@@ -1,8 +1,266 @@
-<h2>Proveedores</h2>
-<a href="{% url 'crear_proveedor' %}">Nuevo Proveedor</a>
-<ul>
-    {% for proveedor in proveedores %}
-        <li>{{ proveedor.nombre }} - {{ proveedor.contacto }} - {{ proveedor.telefono }} - {{ proveedor.email }}</li>
-    {% endfor %}
-</ul>
-<a href="{% url 'panel_gestion_inventario' %}">Volver al Panel de Gestión</a>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Proveedores - Farmacia</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .actions-bar {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #219a52;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+        }
+        
+        .providers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            padding: 30px;
+        }
+        
+        .provider-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .provider-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3498db, #2980b9);
+        }
+        
+        .provider-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        
+        .provider-icon {
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .provider-name {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .provider-info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        
+        .info-icon {
+            width: 20px;
+            text-align: center;
+            color: #3498db;
+        }
+        
+        .info-text {
+            color: #7f8c8d;
+            flex: 1;
+        }
+        
+        .no-providers {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+        }
+        
+        .no-providers h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+        
+        .no-providers p {
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .providers-grid {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+            
+            .actions-bar {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏪 Lista de Proveedores</h1>
+            <p>Gestiona tu red de proveedores farmacéuticos</p>
+        </div>
+        
+        <div class="actions-bar">
+            <a href="{% url 'crear_proveedor' %}" class="btn btn-primary">➕ Nuevo Proveedor</a>
+            <a href="{% url 'panel_gestion_inventario' %}" class="btn btn-secondary">🏠 Volver al Panel</a>
+        </div>
+        
+        <div class="content">
+            {% if proveedores %}
+                <div class="providers-grid">
+                    {% for proveedor in proveedores %}
+                        <div class="provider-card">
+                            <div class="provider-icon">🏭</div>
+                            <div class="provider-name">{{ proveedor.nombre }}</div>
+                            <div class="provider-info">
+                                <div class="info-item">
+                                    <div class="info-icon">👤</div>
+                                    <div class="info-text">
+                                        {% if proveedor.contacto %}
+                                            {{ proveedor.contacto }}
+                                        {% else %}
+                                            <em>Sin contacto</em>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-icon">📞</div>
+                                    <div class="info-text">
+                                        {% if proveedor.telefono %}
+                                            {{ proveedor.telefono }}
+                                        {% else %}
+                                            <em>Sin teléfono</em>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-icon">📧</div>
+                                    <div class="info-text">
+                                        {% if proveedor.email %}
+                                            {{ proveedor.email }}
+                                        {% else %}
+                                            <em>Sin email</em>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-providers">
+                    <h3>🏪 No hay proveedores registrados</h3>
+                    <p>Comienza agregando tu primer proveedor a la base de datos</p>
+                    <a href="{% url 'crear_proveedor' %}" class="btn btn-primary">➕ Agregar Proveedor</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,8 +1,324 @@
-<h2>Proyectos</h2>
-<a href="{% url 'crear_proyecto' %}">Nuevo Proyecto</a>
-<ul>
-    {% for proyecto in proyectos %}
-        <li>{{ proyecto.nombre }} | Responsable: {{ proyecto.responsable }} | Inicio: {{ proyecto.fecha_inicio }} | Fin: {{ proyecto.fecha_fin }}</li>
-    {% endfor %}
-</ul>
-<a href="{% url 'panel_gestion_inventario' %}">Volver al Panel de Gestión</a>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Proyectos - Farmacia</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .actions-bar {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #219a52;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+        }
+        
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 25px;
+            padding: 30px;
+        }
+        
+        .project-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #9b59b6, #8e44ad);
+        }
+        
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        
+        .project-icon {
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .project-name {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .project-description {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            text-align: center;
+            min-height: 40px;
+        }
+        
+        .project-info {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        
+        .info-icon {
+            width: 20px;
+            text-align: center;
+            color: #9b59b6;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #2c3e50;
+            min-width: 90px;
+        }
+        
+        .info-text {
+            color: #7f8c8d;
+            flex: 1;
+        }
+        
+        .project-status {
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-completed {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .no-projects {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+        }
+        
+        .no-projects h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+        
+        .no-projects p {
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .projects-grid {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+            
+            .actions-bar {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Lista de Proyectos</h1>
+            <p>Gestiona y supervisa los proyectos en curso</p>
+        </div>
+        
+        <div class="actions-bar">
+            <a href="{% url 'crear_proyecto' %}" class="btn btn-primary">➕ Nuevo Proyecto</a>
+            <a href="{% url 'panel_gestion_inventario' %}" class="btn btn-secondary">🏠 Volver al Panel</a>
+        </div>
+        
+        <div class="content">
+            {% if proyectos %}
+                <div class="projects-grid">
+                    {% for proyecto in proyectos %}
+                        <div class="project-card">
+                            <div class="project-icon">🎯</div>
+                            <div class="project-name">{{ proyecto.nombre }}</div>
+                            <div class="project-description">
+                                {% if proyecto.descripcion %}
+                                    {{ proyecto.descripcion|truncatewords:15 }}
+                                {% else %}
+                                    <em>Sin descripción disponible</em>
+                                {% endif %}
+                            </div>
+                            <div class="project-info">
+                                <div class="info-item">
+                                    <div class="info-icon">👤</div>
+                                    <div class="info-label">Responsable:</div>
+                                    <div class="info-text">
+                                        {% if proyecto.responsable %}
+                                            {{ proyecto.responsable.username }}
+                                        {% else %}
+                                            <em>Sin asignar</em>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-icon">📅</div>
+                                    <div class="info-label">Inicio:</div>
+                                    <div class="info-text">{{ proyecto.fecha_inicio|date:"d/m/Y" }}</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-icon">🏁</div>
+                                    <div class="info-label">Fin:</div>
+                                    <div class="info-text">
+                                        {% if proyecto.fecha_fin %}
+                                            {{ proyecto.fecha_fin|date:"d/m/Y" }}
+                                        {% else %}
+                                            <em>No definida</em>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="project-status">
+                                {% now "Y-m-d" as today %}
+                                {% if proyecto.fecha_fin and proyecto.fecha_fin|date:"Y-m-d" < today %}
+                                    <span class="status-badge status-completed">Completado</span>
+                                {% elif proyecto.fecha_inicio|date:"Y-m-d" <= today %}
+                                    <span class="status-badge status-active">En Progreso</span>
+                                {% else %}
+                                    <span class="status-badge status-pending">Pendiente</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-projects">
+                    <h3>📊 No hay proyectos registrados</h3>
+                    <p>Comienza creando tu primer proyecto</p>
+                    <a href="{% url 'crear_proyecto' %}" class="btn btn-primary">➕ Crear Proyecto</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

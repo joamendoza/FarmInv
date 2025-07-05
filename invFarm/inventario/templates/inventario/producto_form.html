@@ -1,16 +1,293 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>{% if object %}Editar Producto{% else %}Nuevo Producto{% endif %}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if object %}✏️ Editar Producto{% else %}➕ Nuevo Producto{% endif %} - FarmInv</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #667eea;
+            outline: none;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .btn {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .btn-back {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-back:hover {
+            background: #138496;
+            transform: translateY(-2px);
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .required {
+            color: #dc3545;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+            
+            .form-container {
+                padding: 25px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-container {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>{% if object %}Editar Producto{% else %}Nuevo Producto{% endif %}</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Guardar</button>
-    </form>
-    <a href="{% url 'producto_list' %}">Cancelar</a>
+    <div class="container">
+        <div class="header">
+            <h1>
+                {% if object %}
+                    <i class="fas fa-edit"></i> Editar Producto
+                {% else %}
+                    <i class="fas fa-plus"></i> Nuevo Producto
+                {% endif %}
+            </h1>
+            <p class="subtitle">{% if object %}Modifica la información del producto{% else %}Añade un nuevo producto al inventario{% endif %}</p>
+        </div>
+        
+        <div class="form-container">
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.nombre.id_for_label }}">
+                            <i class="fas fa-pills"></i> Nombre del Producto <span class="required">*</span>
+                        </label>
+                        {{ form.nombre }}
+                        {% if form.nombre.help_text %}
+                            <div class="help-text">{{ form.nombre.help_text }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.categoria.id_for_label }}">
+                            <i class="fas fa-tags"></i> Categoría <span class="required">*</span>
+                        </label>
+                        {{ form.categoria }}
+                        {% if form.categoria.help_text %}
+                            <div class="help-text">{{ form.categoria.help_text }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.descripcion.id_for_label }}">
+                        <i class="fas fa-align-left"></i> Descripción
+                    </label>
+                    {{ form.descripcion }}
+                    {% if form.descripcion.help_text %}
+                        <div class="help-text">{{ form.descripcion.help_text }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.precio.id_for_label }}">
+                            <i class="fas fa-dollar-sign"></i> Precio <span class="required">*</span>
+                        </label>
+                        {{ form.precio }}
+                        {% if form.precio.help_text %}
+                            <div class="help-text">{{ form.precio.help_text }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.stock.id_for_label }}">
+                            <i class="fas fa-boxes"></i> Stock Inicial <span class="required">*</span>
+                        </label>
+                        {{ form.stock }}
+                        {% if form.stock.help_text %}
+                            <div class="help-text">{{ form.stock.help_text }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="{{ form.fecha_vencimiento.id_for_label }}">
+                            <i class="fas fa-calendar-alt"></i> Fecha de Vencimiento
+                        </label>
+                        {{ form.fecha_vencimiento }}
+                        {% if form.fecha_vencimiento.help_text %}
+                            <div class="help-text">{{ form.fecha_vencimiento.help_text }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.proveedor.id_for_label }}">
+                            <i class="fas fa-truck"></i> Proveedor
+                        </label>
+                        {{ form.proveedor }}
+                        {% if form.proveedor.help_text %}
+                            <div class="help-text">{{ form.proveedor.help_text }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="btn-container">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Guardar Producto
+                    </button>
+                    <a href="{% url 'producto_list' %}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancelar
+                    </a>
+                    <a href="{% url 'panel_gestion_inventario' %}" class="btn btn-back">
+                        <i class="fas fa-arrow-left"></i> Volver al Panel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
-<a href="{% url 'panel_gestion_inventario' %}">Volver al Panel de Gestión</a>
 </html>

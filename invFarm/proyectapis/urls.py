@@ -17,9 +17,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth.views import LogoutView
+from django.shortcuts import redirect
 from inventario.views import login_usuario
 
+def redirect_to_store(request):
+    return redirect('lista_productos')
+
 urlpatterns = [
+    path('', redirect_to_store, name='home'),  # Redirige la URL raíz a la tienda
     path('admin/', admin.site.urls),
     path('inventario/', include('inventario.urls')),
     path('producto/', include('carrito.urls')),

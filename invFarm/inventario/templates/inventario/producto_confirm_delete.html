@@ -1,15 +1,195 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Eliminar Producto</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🗑️ Eliminar Producto - FarmInv</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .delete-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .warning-icon {
+            font-size: 64px;
+            color: #dc3545;
+            margin-bottom: 20px;
+        }
+
+        .delete-title {
+            font-size: 28px;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .delete-message {
+            font-size: 18px;
+            color: #6c757d;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .product-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 4px solid #dc3545;
+        }
+
+        .product-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .product-details {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .warning-text {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            color: #856404;
+            font-size: 14px;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 480px) {
+            .delete-container {
+                padding: 30px 25px;
+                margin: 10px;
+            }
+            
+            .warning-icon {
+                font-size: 48px;
+            }
+            
+            .delete-title {
+                font-size: 24px;
+            }
+            
+            .delete-message {
+                font-size: 16px;
+            }
+            
+            .btn-container {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Eliminar Producto</h1>
-    <p>¿Estás seguro de que deseas eliminar "{{ object.nombre }}"?</p>
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit">Eliminar</button>
-    </form>
-    <a href="{% url 'producto_list' %}">Cancelar</a>
+    <div class="delete-container">
+        <i class="fas fa-exclamation-triangle warning-icon"></i>
+        
+        <h1 class="delete-title">Eliminar Producto</h1>
+        
+        <p class="delete-message">
+            ¿Estás seguro de que deseas eliminar este producto del inventario?
+        </p>
+        
+        <div class="product-info">
+            <div class="product-name">
+                <i class="fas fa-pills"></i> {{ object.nombre }}
+            </div>
+            <div class="product-details">
+                {% if object.categoria %}
+                    <i class="fas fa-tag"></i> {{ object.categoria.nombre }} • 
+                {% endif %}
+                <i class="fas fa-boxes"></i> {{ object.stock }} en stock • 
+                <i class="fas fa-dollar-sign"></i> ${{ object.precio }}
+            </div>
+        </div>
+        
+        <div class="warning-text">
+            <i class="fas fa-info-circle"></i> <strong>Advertencia:</strong> Esta acción no se puede deshacer. El producto será eliminado permanentemente del sistema.
+        </div>
+        
+        <div class="btn-container">
+            <form method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Confirmar Eliminación
+                </button>
+            </form>
+            <a href="{% url 'producto_list' %}" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Cancelar
+            </a>
+        </div>
+    </div>
 </body>
 </html>

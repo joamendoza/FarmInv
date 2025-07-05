@@ -1,82 +1,471 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Panel de Gestión de Inventario</title>
+    <title>Panel de Gestión - Farmacia</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        .grupo-usuario {
-            float: right;
-            color: #888;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .user-info {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: rgba(255,255,255,0.1);
+            padding: 10px 20px;
+            border-radius: 20px;
             font-size: 0.9em;
-            margin-top: 10px;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .dashboard-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .dashboard-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3498db, #2980b9);
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        
+        .card-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        
+        .card-title {
+            font-size: 1.3em;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .card-description {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .card-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            padding: 12px 20px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .action-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .action-btn.primary {
+            background: #27ae60;
+        }
+        
+        .action-btn.primary:hover {
+            background: #219a52;
+        }
+        
+        .action-btn.secondary {
+            background: #e74c3c;
+        }
+        
+        .action-btn.secondary:hover {
+            background: #c0392b;
+        }
+        
+        .action-btn.warning {
+            background: #f39c12;
+        }
+        
+        .action-btn.warning:hover {
+            background: #e67e22;
+        }
+        
+        .info-section {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .info-section h2 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            font-weight: 300;
+        }
+        
+        .info-section p {
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+        
+        .footer-actions {
+            background: #2c3e50;
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .footer-btn {
+            background: #34495e;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .footer-btn:hover {
+            background: #4a5f7a;
+            transform: translateY(-2px);
+        }
+        
+        .footer-btn.logout {
+            background: #e74c3c;
+        }
+        
+        .footer-btn.logout:hover {
+            background: #c0392b;
+        }
+        
+        .role-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            margin: 2px;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .user-info {
+                position: static;
+                margin-top: 20px;
+                display: inline-block;
+            }
+            
+            .footer-actions {
+                flex-direction: column;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>
-        Panel de Gestión de Inventario
-        <span class="grupo-usuario">
-            (
-            {% for group in user.groups.all %}
-                {{ group.name }}{% if not forloop.last %}, {% endif %}
-            {% empty %}
-                Sin grupo
-            {% endfor %}
-            )
-        </span>
-    </h1>
-    <ul>
-        {% if user.is_superuser %}
-            <li><a href="{% url 'producto_list' %}">Lista de Productos</a></li>
-            <li><a href="{% url 'producto_create' %}">Agregar Producto</a></li>
-            <li><a href="{% url 'lista_proveedores' %}">Proveedores</a></li>
-            <li><a href="{% url 'crear_proveedor' %}">Agregar Proveedor</a></li>
-            <li><a href="{% url 'lista_ordenes_compra' %}">Órdenes de Compra</a></li>
-            <li><a href="{% url 'crear_orden_compra' %}">Nueva Orden de Compra</a></li>
-            <li><a href="{% url 'lista_proyectos' %}">Proyectos</a></li>
-            <li><a href="{% url 'crear_proyecto' %}">Nuevo Proyecto</a></li>
-            <li><a href="{% url 'reporte_inventario' %}">Reporte de Inventario y Movimientos</a></li>
-        {% else %}
-            {% for group in user.groups.all %}
-                {% if group.name == "Usuario Final o Trabajador de Planta" %}
-                    <li><a href="{% url 'producto_list' %}">Solicitar/Registrar Salida de Materiales</a></li>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 Panel de Gestión</h1>
+            <p>Sistema de administración de inventario farmacéutico</p>
+            <div class="user-info">
+                👤 {{ user.username }}
+                <div>
+                    {% for group in user.groups.all %}
+                        <span class="role-badge">{{ group.name }}</span>
+                    {% empty %}
+                        <span class="role-badge">Sin grupo</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="dashboard-grid">
+                {% if user.is_superuser %}
+                    <div class="dashboard-card">
+                        <div class="card-icon">💊</div>
+                        <div class="card-title">Gestión de Productos</div>
+                        <div class="card-description">Administra el inventario completo de medicamentos y productos farmacéuticos</div>
+                        <div class="card-actions">
+                            <a href="{% url 'producto_list' %}" class="action-btn primary">📋 Ver Productos</a>
+                            <a href="{% url 'producto_create' %}" class="action-btn">➕ Agregar Producto</a>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <div class="card-icon">🏪</div>
+                        <div class="card-title">Proveedores</div>
+                        <div class="card-description">Gestiona la base de datos de proveedores y sus contactos</div>
+                        <div class="card-actions">
+                            <a href="{% url 'lista_proveedores' %}" class="action-btn primary">📋 Ver Proveedores</a>
+                            <a href="{% url 'crear_proveedor' %}" class="action-btn">➕ Agregar Proveedor</a>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <div class="card-icon">🛒</div>
+                        <div class="card-title">Órdenes de Compra</div>
+                        <div class="card-description">Administra las órdenes de compra y pedidos a proveedores</div>
+                        <div class="card-actions">
+                            <a href="{% url 'lista_ordenes_compra' %}" class="action-btn primary">📋 Ver Órdenes</a>
+                            <a href="{% url 'crear_orden_compra' %}" class="action-btn">➕ Nueva Orden</a>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <div class="card-icon">📊</div>
+                        <div class="card-title">Proyectos</div>
+                        <div class="card-description">Gestiona proyectos y asignaciones de recursos</div>
+                        <div class="card-actions">
+                            <a href="{% url 'lista_proyectos' %}" class="action-btn primary">📋 Ver Proyectos</a>
+                            <a href="{% url 'crear_proyecto' %}" class="action-btn">➕ Nuevo Proyecto</a>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <div class="card-icon">📈</div>
+                        <div class="card-title">Reportes</div>
+                        <div class="card-description">Genera reportes detallados de inventario y movimientos</div>
+                        <div class="card-actions">
+                            <a href="{% url 'reporte_inventario' %}" class="action-btn warning">📊 Ver Reportes</a>
+                        </div>
+                    </div>
+                {% else %}
+                    {% for group in user.groups.all %}
+                        {% if group.name == "Usuario Final o Trabajador de Planta" %}
+                            <div class="dashboard-card">
+                                <div class="card-icon">📤</div>
+                                <div class="card-title">Salida de Materiales</div>
+                                <div class="card-description">Solicita y registra la salida de materiales del inventario</div>
+                                <div class="card-actions">
+                                    <a href="{% url 'producto_list' %}" class="action-btn primary">📋 Solicitar Materiales</a>
+                                </div>
+                            </div>
+                        {% endif %}
+                        
+                        {% if group.name == "Gestor de Inventario" %}
+                            <div class="dashboard-card">
+                                <div class="card-icon">💊</div>
+                                <div class="card-title">Gestión de Productos</div>
+                                <div class="card-description">Administra el inventario de medicamentos</div>
+                                <div class="card-actions">
+                                    <a href="{% url 'producto_list' %}" class="action-btn primary">📋 Ver Productos</a>
+                                    <a href="{% url 'producto_create' %}" class="action-btn">➕ Agregar Producto</a>
+                                </div>
+                            </div>
+                            
+                            <div class="dashboard-card">
+                                <div class="card-icon">🏪</div>
+                                <div class="card-title">Proveedores</div>
+                                <div class="card-description">Gestiona proveedores y contactos</div>
+                                <div class="card-actions">
+                                    <a href="{% url 'lista_proveedores' %}" class="action-btn primary">📋 Ver Proveedores</a>
+                                    <a href="{% url 'crear_proveedor' %}" class="action-btn">➕ Agregar Proveedor</a>
+                                </div>
+                            </div>
+                            
+                            <div class="dashboard-card">
+                                <div class="card-icon">🛒</div>
+                                <div class="card-title">Órdenes de Compra</div>
+                                <div class="card-description">Administra órdenes de compra</div>
+                                <div class="card-actions">
+                                    <a href="{% url 'lista_ordenes_compra' %}" class="action-btn primary">📋 Ver Órdenes</a>
+                                    <a href="{% url 'crear_orden_compra' %}" class="action-btn">➕ Nueva Orden</a>
+                                </div>
+                            </div>
+                            
+                            <div class="dashboard-card">
+                                <div class="card-icon">📊</div>
+                                <div class="card-title">Proyectos</div>
+                                <div class="card-description">Gestiona proyectos</div>
+                                <div class="card-actions">
+                                    <a href="{% url 'lista_proyectos' %}" class="action-btn primary">📋 Ver Proyectos</a>
+                                    <a href="{% url 'crear_proyecto' %}" class="action-btn">➕ Nuevo Proyecto</a>
+                                </div>
+                            </div>
+                            
+                            <div class="dashboard-card">
+                                <div class="card-icon">📈</div>
+                                <div class="card-title">Reportes</div>
+                                <div class="card-description">Genera reportes de inventario</div>
+                                <div class="card-actions">
+                                    <a href="{% url 'reporte_inventario' %}" class="action-btn warning">📊 Ver Reportes</a>
+                                </div>
+                            </div>
+                        {% endif %}
+                        
+                        {% if group.name == "Comprador" %}
+                            <div class="dashboard-card">
+                                <div class="card-icon">🏪</div>
+                                <div class="card-title">Proveedores</div>
+                                <div class="card-description">Gestiona proveedores y contactos</div>
+                                <div class="card-actions">
+                                    <a href="{% url 'lista_proveedores' %}" class="action-btn primary">📋 Ver Proveedores</a>
+                                    <a href="{% url 'crear_proveedor' %}" class="action-btn">➕ Agregar Proveedor</a>
+                                </div>
+                            </div>
+                            
+                            <div class="dashboard-card">
+                                <div class="card-icon">🛒</div>
+                                <div class="card-title">Órdenes de Compra</div>
+                                <div class="card-description">Administra órdenes de compra</div>
+                                <div class="card-actions">
+                                    <a href="{% url 'lista_ordenes_compra' %}" class="action-btn primary">📋 Ver Órdenes</a>
+                                    <a href="{% url 'crear_orden_compra' %}" class="action-btn">➕ Nueva Orden</a>
+                                </div>
+                            </div>
+                            
+                            <div class="dashboard-card">
+                                <div class="card-icon">📈</div>
+                                <div class="card-title">Reportes</div>
+                                <div class="card-description">Genera reportes de compras</div>
+                                <div class="card-actions">
+                                    <a href="{% url 'reporte_inventario' %}" class="action-btn warning">📊 Ver Reportes</a>
+                                </div>
+                            </div>
+                        {% endif %}
+                        
+                        {% if group.name == "Jefe de Producción o Manufactura" or group.name == "Gerente de Proyectos" %}
+                            <div class="dashboard-card">
+                                <div class="card-icon">📊</div>
+                                <div class="card-title">Proyectos</div>
+                                <div class="card-description">Gestiona proyectos y producción</div>
+                                <div class="card-actions">
+                                    <a href="{% url 'lista_proyectos' %}" class="action-btn primary">📋 Ver Proyectos</a>
+                                    <a href="{% url 'crear_proyecto' %}" class="action-btn">➕ Nuevo Proyecto</a>
+                                </div>
+                            </div>
+                            
+                            <div class="dashboard-card">
+                                <div class="card-icon">📈</div>
+                                <div class="card-title">Reportes</div>
+                                <div class="card-description">Genera reportes de producción</div>
+                                <div class="card-actions">
+                                    <a href="{% url 'reporte_inventario' %}" class="action-btn warning">📊 Ver Reportes</a>
+                                </div>
+                            </div>
+                        {% endif %}
+                        
+                        {% if group.name == "Encargado de Logística" or group.name == "Auditor de Inventario" %}
+                            <div class="dashboard-card">
+                                <div class="card-icon">📈</div>
+                                <div class="card-title">Reportes</div>
+                                <div class="card-description">Genera reportes de logística e inventario</div>
+                                <div class="card-actions">
+                                    <a href="{% url 'reporte_inventario' %}" class="action-btn warning">📊 Ver Reportes</a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% empty %}
+                        <div class="dashboard-card">
+                            <div class="card-icon">⚠️</div>
+                            <div class="card-title">Sin Permisos</div>
+                            <div class="card-description">No tienes permisos asignados. Contacta al administrador.</div>
+                        </div>
+                    {% endfor %}
                 {% endif %}
-                {% if group.name == "Gestor de Inventario" %}
-                    <li><a href="{% url 'producto_list' %}">Lista de Productos</a></li>
-                    <li><a href="{% url 'producto_create' %}">Agregar Producto</a></li>
-                    <li><a href="{% url 'lista_proveedores' %}">Proveedores</a></li>
-                    <li><a href="{% url 'crear_proveedor' %}">Agregar Proveedor</a></li>
-                    <li><a href="{% url 'lista_ordenes_compra' %}">Órdenes de Compra</a></li>
-                    <li><a href="{% url 'crear_orden_compra' %}">Nueva Orden de Compra</a></li>
-                    <li><a href="{% url 'lista_proyectos' %}">Proyectos</a></li>
-                    <li><a href="{% url 'crear_proyecto' %}">Nuevo Proyecto</a></li>
-                    <li><a href="{% url 'reporte_inventario' %}">Reporte de Inventario y Movimientos</a></li>
-                {% endif %}
-                {% if group.name == "Comprador" %}
-                    <li><a href="{% url 'lista_proveedores' %}">Proveedores</a></li>
-                    <li><a href="{% url 'crear_proveedor' %}">Agregar Proveedor</a></li>
-                    <li><a href="{% url 'lista_ordenes_compra' %}">Órdenes de Compra</a></li>
-                    <li><a href="{% url 'crear_orden_compra' %}">Nueva Orden de Compra</a></li>
-                    <li><a href="{% url 'reporte_inventario' %}">Reporte de Inventario y Movimientos</a></li>
-                {% endif %}
-                {% if group.name == "Jefe de Producción o Manufactura" or group.name == "Gerente de Proyectos" %}
-                    <li><a href="{% url 'lista_proyectos' %}">Proyectos</a></li>
-                    <li><a href="{% url 'crear_proyecto' %}">Nuevo Proyecto</a></li>
-                    <li><a href="{% url 'reporte_inventario' %}">Reporte de Inventario y Movimientos</a></li>
-                {% endif %}
-                {% if group.name == "Encargado de Logística" or group.name == "Auditor de Inventario" %}
-                    <li><a href="{% url 'reporte_inventario' %}">Reporte de Inventario y Movimientos</a></li>
-                {% endif %}
-            {% empty %}
-                <li>Sin grupo</li>
-            {% endfor %}
-        {% endif %}
-    </ul>
-    <h2>Movimientos de Inventario</h2>
-    <p>Para registrar una <strong>entrada</strong> o <strong>salida</strong> de stock, primero selecciona un producto en la <a href="{% url 'producto_list' %}">Lista de Productos</a> y usa los enlaces "Registrar Entrada" o "Registrar Salida" que aparecen junto a cada producto.</p>
-    <a href="{% url 'lista_productos' %}">Ir a la tienda</a>
-    <form action="{% url 'logout' %}" method="post" style="display:inline;">
-        {% csrf_token %}
-        <button type="submit">Cerrar sesión</button>
-    </form>
+            </div>
+            
+            <div class="info-section">
+                <h2>📦 Movimientos de Inventario</h2>
+                <p>Para registrar una <strong>entrada</strong> o <strong>salida</strong> de stock, dirígete a la <strong>Lista de Productos</strong> y utiliza los botones "Registrar Entrada" o "Registrar Salida" que aparecen junto a cada producto. Esto te permitirá mantener un control preciso del inventario.</p>
+            </div>
+            
+            <div class="footer-actions">
+                <a href="{% url 'lista_productos' %}" class="footer-btn">🛒 Ir a la Tienda</a>
+                <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="footer-btn logout">🚪 Cerrar Sesión</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

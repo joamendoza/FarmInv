@@ -18,17 +18,29 @@ class ProductoListView(ListView):
     template_name = 'inventario/producto_list.html'
 
     def get_queryset(self):
-        return Producto.objects.all()  # Mostrar todos los productos
+        return Producto.objects.filter(activo=True)  # Solo productos activos
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        productos = self.get_queryset()
+        
+        # Calcular estadísticas
+        context['total_productos'] = productos.count()
+        context['stock_total'] = sum(producto.stock for producto in productos)
+        context['productos_stock_bajo'] = productos.filter(stock__lte=10, stock__gt=0).count()
+        context['productos_sin_stock'] = productos.filter(stock=0).count()
+        
+        return context
 
 class ProductoCreateView(CreateView):
     model = Producto
-    fields = ['nombre', 'categoria', 'descripcion', 'precio', 'stock', 'ubicacion']
+    fields = ['nombre', 'categoria', 'descripcion', 'precio', 'stock', 'ubicacion', 'fecha_vencimiento', 'proveedor']
     template_name = 'inventario/producto_form.html'
     success_url = reverse_lazy('producto_list')
 
 class ProductoUpdateView(UpdateView):
     model = Producto
-    fields = ['nombre', 'categoria', 'descripcion', 'precio', 'stock', 'ubicacion']
+    fields = ['nombre', 'categoria', 'descripcion', 'precio', 'stock', 'ubicacion', 'fecha_vencimiento', 'proveedor']
     template_name = 'inventario/producto_form.html'
     success_url = reverse_lazy('producto_list')
 

@@ -1,9 +1,273 @@
-<h2>Registrar Salida para {{ producto.nombre }}</h2>
-{% if error %}<p style="color:red;">{{ error }}</p>{% endif %}
-<form method="post">
-    {% csrf_token %}
-    <label>Cantidad a retirar:</label>
-    <input type="number" name="cantidad" min="1" required>
-    <button type="submit">Registrar Salida</button>
-</form>
-<a href="{% url 'panel_gestion_inventario' %}">Volver al Panel de Gestión</a>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📤 Registrar Salida - {{ producto.nombre }} - FarmInv</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .exit-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .exit-header {
+            margin-bottom: 30px;
+        }
+
+        .exit-icon {
+            font-size: 48px;
+            color: #dc3545;
+            margin-bottom: 20px;
+        }
+
+        .exit-title {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .product-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 4px solid #dc3545;
+        }
+
+        .product-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .product-details {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-group input:focus {
+            border-color: #dc3545;
+            outline: none;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .info-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            color: #856404;
+            font-size: 14px;
+        }
+
+        .current-stock {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            color: #0c5460;
+            text-align: center;
+        }
+
+        .stock-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #17a2b8;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            color: #721c24;
+            font-size: 14px;
+        }
+
+        .low-stock {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            color: #856404;
+            text-align: center;
+        }
+
+        @media (max-width: 480px) {
+            .exit-container {
+                padding: 30px 25px;
+                margin: 10px;
+            }
+            
+            .exit-title {
+                font-size: 20px;
+            }
+            
+            .btn-container {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="exit-container">
+        <div class="exit-header">
+            <i class="fas fa-box exit-icon"></i>
+            <h1 class="exit-title">Registrar Salida</h1>
+        </div>
+        
+        <div class="product-info">
+            <div class="product-name">
+                <i class="fas fa-pills"></i> {{ producto.nombre }}
+            </div>
+            <div class="product-details">
+                {% if producto.categoria %}
+                    <i class="fas fa-tag"></i> {{ producto.categoria.nombre }} • 
+                {% endif %}
+                <i class="fas fa-dollar-sign"></i> ${{ producto.precio }}
+            </div>
+        </div>
+        
+        <div class="current-stock">
+            <strong>Stock Actual:</strong>
+            <div class="stock-number">{{ producto.stock }}</div>
+            <small>unidades disponibles</small>
+        </div>
+        
+        {% if producto.stock <= 10 %}
+            <div class="low-stock">
+                <i class="fas fa-exclamation-triangle"></i> <strong>¡Atención!</strong> El stock está bajo. Considera reordenar pronto.
+            </div>
+        {% endif %}
+        
+        {% if error %}
+            <div class="error-message">
+                <i class="fas fa-exclamation-circle"></i> <strong>Error:</strong> {{ error }}
+            </div>
+        {% endif %}
+        
+        <div class="info-box">
+            <i class="fas fa-info-circle"></i> <strong>Información:</strong> Ingresa la cantidad de productos que deseas retirar del inventario.
+        </div>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="cantidad">
+                    <i class="fas fa-minus"></i> Cantidad a Retirar
+                </label>
+                <input type="number" id="cantidad" name="cantidad" min="1" max="{{ producto.stock }}" required placeholder="Ej: 10">
+            </div>
+            
+            <div class="btn-container">
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-save"></i> Registrar Salida
+                </button>
+                <a href="{% url 'panel_gestion_inventario' %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver al Panel
+                </a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

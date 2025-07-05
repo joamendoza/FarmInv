@@ -1,25 +1,334 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Pago Exitoso</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✅ Pago Exitoso - FarmInv</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .success-header {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .success-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .success-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .success-subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .receipt-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-left: 4px solid #28a745;
+        }
+
+        .receipt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .receipt-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .receipt-code {
+            background: #28a745;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .receipt-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .info-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 3px solid #667eea;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #6c757d;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .products-list {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #e9ecef;
+        }
+
+        .list-header {
+            background: #667eea;
+            color: white;
+            padding: 15px 20px;
+            font-weight: 600;
+        }
+
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .product-item:last-child {
+            border-bottom: none;
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .product-details {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .product-price {
+            font-size: 16px;
+            font-weight: 600;
+            color: #28a745;
+        }
+
+        .total-section {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .thank-you-message {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #155724;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+            
+            .content {
+                padding: 25px 20px;
+            }
+            
+            .receipt-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .receipt-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .product-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>¡Gracias por tu compra!</h1>
-    <a href="{% url 'lista_productos' %}">Volver a la tienda</a>
-
-    {% if boleta %}
-        <h2>Boleta: {{ boleta.codigo }}</h2>
-        <p>Usuario: {{ boleta.usuario_id_unico }}</p>
-        <p>Fecha: {{ boleta.fecha }}</p>
-        <p>Total: ${{ boleta.total }}</p>
-        <ul>
-            {% for detalle in boleta.detalles.all %}
-                <li>{{ detalle.producto.nombre }} - Cantidad: {{ detalle.cantidad }} - Precio unitario: ${{ detalle.precio }}</li>
-            {% endfor %}
-        </ul>
-        <a href="{% url 'descargar_boleta_pdf' boleta.codigo %}" class="btn btn-primary" target="_blank">
-            Descargar Boleta en PDF
-        </a>
-    {% endif %}
+    <div class="container">
+        <div class="success-header">
+            <i class="fas fa-check-circle success-icon"></i>
+            <h1 class="success-title">¡Pago Exitoso!</h1>
+            <p class="success-subtitle">Tu compra ha sido procesada correctamente</p>
+        </div>
+        
+        <div class="content">
+            <div class="thank-you-message">
+                <i class="fas fa-heart"></i> <strong>¡Gracias por tu compra!</strong> Tu pedido ha sido registrado exitosamente.
+            </div>
+            
+            {% if boleta %}
+                <div class="receipt-section">
+                    <div class="receipt-header">
+                        <h2 class="receipt-title">
+                            <i class="fas fa-receipt"></i> Boleta de Compra
+                        </h2>
+                        <span class="receipt-code">{{ boleta.codigo }}</span>
+                    </div>
+                    
+                    <div class="receipt-info">
+                        <div class="info-item">
+                            <div class="info-label">Usuario</div>
+                            <div class="info-value">{{ boleta.usuario_id_unico }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Fecha</div>
+                            <div class="info-value">{{ boleta.fecha|date:"d/m/Y H:i" }}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Total</div>
+                            <div class="info-value">${{ boleta.total }}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="products-list">
+                        <div class="list-header">
+                            <i class="fas fa-shopping-cart"></i> Productos Comprados
+                        </div>
+                        {% for detalle in boleta.detalles.all %}
+                            <div class="product-item">
+                                <div class="product-info">
+                                    <div class="product-name">{{ detalle.producto.nombre }}</div>
+                                    <div class="product-details">
+                                        Cantidad: {{ detalle.cantidad }} • Precio unitario: ${{ detalle.precio }}
+                                    </div>
+                                </div>
+                                <div class="product-price">
+                                    ${{ detalle.precio|floatformat:0 }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <div class="total-section">
+                            <i class="fas fa-calculator"></i> Total: ${{ boleta.total }}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            
+            <div class="action-buttons">
+                <a href="{% url 'lista_productos' %}" class="btn btn-primary">
+                    <i class="fas fa-shopping-cart"></i> Volver a la Tienda
+                </a>
+                {% if boleta %}
+                    <a href="{% url 'descargar_boleta_pdf' boleta.codigo %}" class="btn btn-success" target="_blank">
+                        <i class="fas fa-download"></i> Descargar Boleta PDF
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </body>
 </html>
